@@ -1,0 +1,7 @@
+{
+  "name": "covid-report",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
