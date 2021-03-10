@@ -52,7 +52,7 @@ export class LoginPage implements OnInit {
   ionViewWillEnter() {
     this.submitted = false;
     this.cache.isLoggedIn().then((res: any) => {
-      if (!res) {
+      if (res == true) {
         this.router.navigate(['/home']);
       }
     });
