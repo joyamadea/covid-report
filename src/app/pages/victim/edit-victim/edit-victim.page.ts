@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/core';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, ToastController } from '@ionic/angular';
 import { map } from 'rxjs/operators';
 import { FirebaseService } from 'src/app/services/firebase.service';
 
@@ -46,7 +46,8 @@ export class EditVictimPage implements OnInit {
     private firebaseService: FirebaseService,
     private actionSheetController: ActionSheetController,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {
     this.initForm();
   }
@@ -65,7 +66,7 @@ export class EditVictimPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['victim-ilst']);
+    this.router.navigate(['victim-list']);
   }
 
   async initForm() {
@@ -87,6 +88,7 @@ export class EditVictimPage implements OnInit {
       .valueChanges()
       .subscribe((data) => {
         this.detail = data;
+        console.log(this.detail);
         this.formEdit.patchValue(this.detail);
         this.storage
           .ref(this.detail.ref)
@@ -123,44 +125,22 @@ export class EditVictimPage implements OnInit {
       body = this.formEdit.value;
       body.ref = this.filePath;
 
-      this.firebaseService.update(this.formEdit.value, '-MVNLBPCJ3a4shg3jjSo');
+      this.firebaseService.update(this.formEdit.value, this.key);
+      this.presentToast();
+      this.goBack();
     }
   }
 
-  // CHANGE PHOTO PROFILE
-  async changePhoto() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Mengambil Gambar dari',
-      buttons: [
-        {
-          text: 'Gallery',
-          icon: 'images',
-          handler: () => {
-            this.getPicture();
-          },
-        },
-        {
-          text: 'Camera',
-          icon: 'camera',
-          handler: () => {
-            this.takePicture();
-          },
-        },
-        {
-          text: 'Cancel',
-          icon: 'close',
-          role: 'cancel',
-          handler: () => {
-            console.log('cancelled');
-          },
-        },
-      ],
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Victim edited',
+      duration: 2000,
     });
-    await actionSheet.present();
+    toast.present();
   }
 
   // GET PICTURE FROM PHONE
-  async getPicture() {
+  async changePhoto() {
     const image = await Camera.getPhoto({
       quality: 90,
       resultType: CameraResultType.DataUrl,
@@ -169,16 +149,6 @@ export class EditVictimPage implements OnInit {
     this.photo = image.dataUrl;
     console.log(this.photo);
     // this.updatePhotoProfile();
-  }
-
-  // TAKE PICTURE USING CAMERA
-  async takePicture() {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Camera,
-    });
-    this.photo = image.dataUrl;
   }
 
   dataUrltoFile(dataUrl, filename) {
@@ -196,8 +166,10 @@ export class EditVictimPage implements OnInit {
 
   updatePhotoProfile() {
     let name = this.formEdit.value.name.trim();
-    this.filePath = '/profile/' + name;
+    let date = new Date();
+    let now = Math.round(date.getTime() / 1000).toString();
     if (!this.photo.includes('http')) {
+      this.filePath = '/profile/' + name + now;
       const file = this.dataUrltoFile(this.photo, name);
       let date = new Date();
       const ref = this.storage.ref(this.filePath);
@@ -210,6 +182,8 @@ export class EditVictimPage implements OnInit {
         //   });
         console.log(res);
       });
+    } else {
+      this.filePath = this.detail.ref;
     }
   }
 }

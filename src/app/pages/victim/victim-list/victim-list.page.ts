@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
-import { ActionSheetController, AlertController } from '@ionic/angular';
+import {
+  ActionSheetController,
+  AlertController,
+  ToastController,
+} from '@ionic/angular';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { map } from 'rxjs/operators';
@@ -19,6 +23,8 @@ export class VictimListPage implements OnInit {
   uid: any;
   check: any;
   victimList: any;
+  skeleton = true;
+  fakeList = Array(3);
 
   constructor(
     private cache: CacheService,
@@ -27,7 +33,8 @@ export class VictimListPage implements OnInit {
     private storage: AngularFireStorage,
     private router: Router,
     private actionSheetController: ActionSheetController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {}
@@ -37,10 +44,11 @@ export class VictimListPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['']);
+    this.router.navigate(['/home']);
   }
 
   async fetchData() {
+    this.skeleton = true;
     this.cache.getRole().then((res) => {
       this.role = res;
       this.cache.getId().then((res) => {
@@ -110,11 +118,12 @@ export class VictimListPage implements OnInit {
     });
 
     this.victimList = data;
+    this.skeleton = false;
   }
 
   async actions(id) {
     const actionSheet = await this.actionSheetController.create({
-      header: 'Albums',
+      header: 'Action List',
       cssClass: 'my-custom-class',
       buttons: [
         {
@@ -169,8 +178,18 @@ export class VictimListPage implements OnInit {
     await alert.present();
   }
 
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Victim deleted',
+      duration: 2000,
+    });
+    toast.present();
+  }
+
   delete(id) {
-    this.firebaseService.delete(id);
+    this.firebaseService.delete(id).then((res) => {
+      this.presentToast();
+    });
   }
 
   gotoDetail(id) {

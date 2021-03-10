@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
 import { Observable } from 'rxjs';
 import { Location } from '../model/location';
@@ -13,7 +14,7 @@ export class FirebaseService {
   locRef: AngularFireList<Location> = null;
   victimRef: AngularFireList<Victim> = null;
 
-  constructor(private db: AngularFireDatabase) {
+  constructor(private db: AngularFireDatabase, private af: AngularFireAuth) {
     this.locRef = db.list(this.dbPath);
     this.victimRef = db.list(this.victimPath);
   }
@@ -45,5 +46,9 @@ export class FirebaseService {
 
   delete(key) {
     return this.victimRef.remove(key);
+  }
+
+  logout() {
+    return this.af.signOut();
   }
 }

@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-list *ngIf="!skeleton">
     <ion-item *ngFor="let victim of victimList" (press)="actions(victim.key)">
       <ion-thumbnail slot="start">
         <img [src]="victim.ref" />
@@ -18,6 +18,22 @@
       <ion-label>
         <h3>{{ victim.name }} ({{ victim.age }}{{ victim.gender }})</h3>
         <p>{{ victim.address }} {{ victim.location }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="skeleton">
+    <ion-item *ngFor="let fake of fakeList">
+      <ion-thumbnail slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+      <ion-label>
+        <h3>
+          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+        </h3>
+        <p>
+          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+        </p>
       </ion-label>
     </ion-item>
   </ion-list>

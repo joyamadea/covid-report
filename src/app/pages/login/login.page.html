@@ -16,21 +16,24 @@
           class="custom-input"
           type="number"
           formControlName="phone_number"
+          placeholder="Enter your phone number here"
         ></ion-input>
-        <!-- <ion-text color="danger" class="invalid-input" *ngIf="formLogin.get('username').errors && submitted">
-          {{ formLogin.controls.username.errors?.required?.message }} {{
-          formLogin.controls.username.errors?.phonenumber?.message }} {{
-          formLogin.controls.username.errors?.email?.message }} {{
-          formLogin.controls.username.errors?.minLength?.message }}
-        </ion-text> -->
+        <ion-text style="font-size: 12px; color: gray"
+          >Please use format (08xxx)</ion-text
+        ><br />
+        <ion-text
+          color="danger"
+          style="font-size: 12px"
+          *ngIf="!f.phone_number.valid && submitted"
+        >
+          Please recheck your phone number
+        </ion-text>
       </ion-col>
     </ion-row>
 
     <ion-row class="ion-margin-vertical">
       <ion-col size="12">
-        <ion-button expand="full" type="submit" [disabled]="submitted"
-          >Login</ion-button
-        >
+        <ion-button expand="full" type="submit">Login</ion-button>
       </ion-col>
     </ion-row>
   </form>

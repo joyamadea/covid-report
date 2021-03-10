@@ -28,6 +28,7 @@ export class LoginPage implements OnInit {
   otpSent = false;
   submitted = false;
   phone;
+  message = '';
 
   constructor(
     private fb: FormBuilder,
@@ -50,13 +51,18 @@ export class LoginPage implements OnInit {
 
   ionViewWillEnter() {
     this.submitted = false;
+    this.cache.isLoggedIn().then((res: any) => {
+      if (!res) {
+        this.router.navigate(['/home']);
+      }
+    });
   }
 
   async initForm() {
     this.formLogin = this.fb.group({
       phone_number: new FormControl(
-        '82262268800',
-        Validators.compose([Validators.required])
+        '',
+        Validators.compose([Validators.required, Validators.minLength(10)])
       ),
     });
   }
@@ -67,18 +73,22 @@ export class LoginPage implements OnInit {
 
   login() {
     this.submitted = true;
-    this.phone = '+62' + this.formLogin.value.phone_number.toString();
+    let phoneNum = this.formLogin.value.phone_number.toString();
     if (this.formLogin.valid) {
-      this.fa
-        .signInWithPhoneNumber(this.phone, this.recaptchaVerifier)
-        .then((res: any) => {
+      this.phone = '+62' + phoneNum;
+      console.log(this.phone);
+      this.fa.signInWithPhoneNumber(this.phone, this.recaptchaVerifier).then(
+        (res: any) => {
           this.otpSent = true;
+          this.message = 'OTP Sent';
           this.presentToast();
           this.otpModal(res);
-        });
-      //
-    } else {
-      this.submitted = false;
+        },
+        (err) => {
+          this.message = err.message;
+          this.presentToast();
+        }
+      );
     }
   }
 
@@ -93,7 +103,7 @@ export class LoginPage implements OnInit {
 
   async presentToast() {
     const toast = await this.toastController.create({
-      message: 'OTP Sent',
+      message: this.message,
       duration: 2000,
     });
     toast.present();

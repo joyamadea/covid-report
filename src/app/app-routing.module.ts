@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -40,7 +40,17 @@ const routes: Routes = [
   },
   {
     path: 'victim-list',
-    loadChildren: () => import('./pages/victim/victim-list/victim-list.module').then( m => m.VictimListPageModule)
+    loadChildren: () =>
+      import('./pages/victim/victim-list/victim-list.module').then(
+        (m) => m.VictimListPageModule
+      ),
+  },
+  {
+    path: 'statistics',
+    loadChildren: () =>
+      import('./pages/statistics/statistics.module').then(
+        (m) => m.StatisticsPageModule
+      ),
   },
 ];
 

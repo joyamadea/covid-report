@@ -15,9 +15,15 @@
         type="tel"
         [(ngModel)]="getOtpCode"
         maxlength="6"
-        (keyup)="checkOtp()"
         inputmode="numeric"
+        placeholder="Enter your OTP here"
       ></ion-input>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <ion-button expand="full" (click)="checkOtp()">Submit OTP</ion-button>
     </ion-col>
   </ion-row>
 </ion-content>

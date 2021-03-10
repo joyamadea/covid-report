@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, ToastController } from '@ionic/angular';
 import { CameraResultType, CameraSource, Plugins } from '@capacitor/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { FirebaseService } from 'src/app/services/firebase.service';
@@ -38,13 +38,15 @@ export class AddVictimPage implements OnInit {
   photo: any;
   filePath: any;
   uid;
+  message = '';
 
   constructor(
     private fb: FormBuilder,
     private firebaseService: FirebaseService,
     private storage: AngularFireStorage,
     private cache: CacheService,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {
     this.initForm();
   }
@@ -55,11 +57,12 @@ export class AddVictimPage implements OnInit {
     this.getLocations();
     this.cache.getId().then((res: any) => {
       this.uid = res;
+      console.log(res);
     });
   }
 
   goBack() {
-    this.router.navigate(['']);
+    this.router.navigate(['/home']);
   }
 
   async initForm() {
@@ -86,8 +89,21 @@ export class AddVictimPage implements OnInit {
       body = this.formAdd.value;
       body.ref = this.filePath;
       body.uid = this.uid;
+
+      console.log(body);
+
+      this.firebaseService.create(body).then(
+        (res: any) => {
+          this.message = 'Successfully added new report';
+          this.presentToast();
+        },
+        (err) => {
+          this.message = err.message;
+          this.presentToast();
+          this.goBack();
+        }
+      );
     }
-    this.firebaseService.create(body);
   }
 
   getLocations() {
@@ -134,10 +150,20 @@ export class AddVictimPage implements OnInit {
     let name = this.formAdd.value.name.trim();
     const file = this.dataUrltoFile(this.photo, name);
     let date = new Date();
-    this.filePath = '/profile/' + name;
+    let now = Math.round(date.getTime() / 1000).toString();
+    this.filePath = '/profile/' + name + now;
+    console.log(this.filePath);
     const ref = this.storage.ref(this.filePath);
     const task = ref.put(file).then((res) => {
       console.log(res);
     });
+  }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: this.message,
+      duration: 2000,
+    });
+    toast.present();
   }
 }

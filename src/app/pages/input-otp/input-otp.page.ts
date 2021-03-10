@@ -12,6 +12,7 @@ import 'firebase/auth';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CacheService } from 'src/app/services/cache.service';
 import { ModalController, ToastController } from '@ionic/angular';
+import { AngularFireDatabase } from '@angular/fire/database';
 
 @Component({
   selector: 'app-input-otp',
@@ -28,7 +29,9 @@ export class InputOtpPage implements OnInit {
     private cache: CacheService,
     private router: Router,
     private modalController: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private fa: AngularFireAuth,
+    private db: AngularFireDatabase
   ) {}
 
   ngOnInit() {
@@ -39,7 +42,6 @@ export class InputOtpPage implements OnInit {
     console.log(this.getOtpCode.length);
     if (this.getOtpCode.length == 6) {
       this.confirmationResult.confirm(this.getOtpCode).then((res) => {
-        alert('otp verified');
         console.log(res);
         let uid = firebase.auth().currentUser.uid;
         this.cache.setId(uid);
@@ -79,6 +81,7 @@ export class InputOtpPage implements OnInit {
   async presentToast() {
     const toast = await this.toastController.create({
       message: 'Successful Login',
+      color: 'success',
       duration: 2000,
     });
     toast.present();
