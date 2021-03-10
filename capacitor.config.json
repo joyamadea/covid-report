@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "covid-report",
+  "appId": "com.ionic.covidreport",
+  "appName": "Covid Report",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

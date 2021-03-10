@@ -11,10 +11,10 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { environment } from 'src/environments/environment';
-import { ModalController } from '@ionic/angular';
-import { InputOtpComponent } from 'src/app/components/input-otp/input-otp.component';
+import { ModalController, ToastController } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { CacheService } from 'src/app/services/cache.service';
+import { InputOtpPage } from '../input-otp/input-otp.page';
 
 @Component({
   selector: 'app-login',
@@ -26,13 +26,17 @@ export class LoginPage implements OnInit {
   recaptchaVerifier;
   confirmationResult: firebase.auth.ConfirmationResult;
   otpSent = false;
+  submitted = false;
+  phone;
+  message = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private fa: AngularFireAuth,
     private modalController: ModalController,
-    private cache: CacheService
+    private cache: CacheService,
+    private toastController: ToastController
   ) {
     this.initForm();
   }
@@ -45,11 +49,20 @@ export class LoginPage implements OnInit {
     );
   }
 
+  ionViewWillEnter() {
+    this.submitted = false;
+    this.cache.isLoggedIn().then((res: any) => {
+      if (res == true) {
+        this.router.navigate(['/home']);
+      }
+    });
+  }
+
   async initForm() {
     this.formLogin = this.fb.group({
       phone_number: new FormControl(
-        '82262268811',
-        Validators.compose([Validators.required])
+        '',
+        Validators.compose([Validators.required, Validators.minLength(10)])
       ),
     });
   }
@@ -59,65 +72,40 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    let phone;
-    phone = '+62' + this.formLogin.value.phone_number.toString();
-    console.log(phone);
+    this.submitted = true;
+    let phoneNum = this.formLogin.value.phone_number.toString();
     if (this.formLogin.valid) {
-      this.fa
-        .signInWithPhoneNumber(phone, this.recaptchaVerifier)
-        .then((res: any) => {
+      this.phone = '+62' + phoneNum;
+      console.log(this.phone);
+      this.fa.signInWithPhoneNumber(this.phone, this.recaptchaVerifier).then(
+        (res: any) => {
           this.otpSent = true;
-          alert('otp sent');
-          console.log(res);
-          // let navExtras: NavigationExtras = {
-          //   queryParams: {
-          //     val: res,
-          //   },
-          // };
-          // this.router.navigate(['/input-otp']);
-          // this.otpModal(res);
-          // this.navCtrl.navigateForward(['input-otp'], navExtras);
-
-          this.confirmationResult = res;
-          this.confirmationResult.confirm('123456').then((res) => {
-            console.log(res);
-            this.checkUser();
-          });
-        });
-      //
+          this.message = 'OTP Sent';
+          this.presentToast();
+          this.otpModal(res);
+        },
+        (err) => {
+          this.message = err.message;
+          this.presentToast();
+        }
+      );
     }
   }
 
-  async checkUser() {
-    const check = firebase.database().ref('/users/+6282262268800');
-    check.once('value', async (snapshot) => {
-      if (snapshot.val() == null) {
-        console.log('null');
-        firebase.database().ref('/users').child('+6282262268800').set({
-          role: 'user',
-        });
-        this.cache.setRole('user');
-        this.router.navigate(['']);
-      } else {
-        console.log('not null');
-        console.log(snapshot.val().role);
-        this.cache.setRole(snapshot.val().role);
-        this.router.navigate(['']);
-        // await firebase.database().
-        //   .object('/users/+6282262268800')
-        //   .valueChanges()
-        //   .subscribe((data: any) => {
-        //     console.log(data.role);
-        //   });
-      }
-    });
-  }
   async otpModal(val) {
     const modal = await this.modalController.create({
-      component: InputOtpComponent,
-      componentProps: { confirmResult: val },
+      component: InputOtpPage,
+      componentProps: { confirmResult: val, phoneNum: this.phone },
     });
 
     return await modal.present();
+  }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: this.message,
+      duration: 2000,
+    });
+    toast.present();
   }
 }

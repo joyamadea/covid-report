@@ -5,30 +5,25 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form [formGroup]="formOtp" (ngSubmit)="login()">
-    <ion-row class="ion-margin-vertical">
-      <ion-col size="12">
-        <ion-label>OTP</ion-label>
-      </ion-col>
-      <ion-col size="12">
-        <ion-input
-          class="custom-input"
-          type="number"
-          formControlName="otp"
-        ></ion-input>
-        <!-- <ion-text color="danger" class="invalid-input" *ngIf="formLogin.get('username').errors && submitted">
-          {{ formLogin.controls.username.errors?.required?.message }} {{
-          formLogin.controls.username.errors?.phonenumber?.message }} {{
-          formLogin.controls.username.errors?.email?.message }} {{
-          formLogin.controls.username.errors?.minLength?.message }}
-        </ion-text> -->
-      </ion-col>
-    </ion-row>
+  <ion-row class="ion-margin-vertical">
+    <ion-col size="12">
+      <ion-label>OTP</ion-label>
+    </ion-col>
+    <ion-col size="12">
+      <ion-input
+        class="custom-input"
+        type="tel"
+        [(ngModel)]="getOtpCode"
+        maxlength="6"
+        inputmode="numeric"
+        placeholder="Enter your OTP here"
+      ></ion-input>
+    </ion-col>
+  </ion-row>
 
-    <ion-row class="ion-margin-vertical">
-      <ion-col size="12">
-        <ion-button expand="full" type="submit">Login</ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
+  <ion-row>
+    <ion-col>
+      <ion-button expand="full" (click)="checkOtp()">Submit OTP</ion-button>
+    </ion-col>
+  </ion-row>
 </ion-content>

@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Statistics</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-row>
+    <ion-col
+      class="ion-text-center ion-margin-bottom"
+      size="12"
+      style="font-weight: bold; font-size: 20px"
+    >
+      LOCATION REPORT
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <canvas #barChart></canvas>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <ion-text style="font-size: 12px" color="danger"
+        >UNDER DEVELOPMENT</ion-text
+      >
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>New Victim</ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -15,13 +20,14 @@
           class="custom-input"
           type="text"
           formControlName="name"
+          placeholder="Enter victim's name"
         ></ion-input>
       </ion-col>
     </ion-row>
 
     <ion-row class="ion-margin-vertical">
       <ion-col>
-        <ion-button (click)="changePhoto()">Picture</ion-button>
+        <ion-button (click)="getPicture()">Upload Picture</ion-button>
       </ion-col>
       <ion-col *ngIf="photo != null">
         <img [src]="photo" />
@@ -33,7 +39,12 @@
         <ion-label>Age</ion-label>
       </ion-col>
       <ion-col size="12">
-        <ion-input class="custom-input" type="number" formControlName="age">
+        <ion-input
+          class="custom-input"
+          type="number"
+          formControlName="age"
+          placeholder="Enter age"
+        >
         </ion-input>
       </ion-col>
     </ion-row>
@@ -47,6 +58,7 @@
           class="custom-input"
           type="text"
           formControlName="address"
+          placeholder="Enter address"
         ></ion-input>
       </ion-col>
     </ion-row>
@@ -79,6 +91,7 @@
           formControlName="location"
           [interfaceOptions]="customActionSheetOptionsC"
           interface="action-sheet"
+          placeholder="Select location"
         >
           <ion-select-option *ngFor="let loc of locations" [value]="loc.key"
             >{{ loc.name }}</ion-select-option

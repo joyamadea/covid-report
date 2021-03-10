@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">covid-report</string>
     <string name="title_activity_main">covid-report</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="package_name">com.ionic.covidreport</string>
+    <string name="custom_url_scheme">com.ionic.covidreport</string>
 </resources>

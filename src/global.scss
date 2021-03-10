@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -27,18 +27,29 @@
 
 // CUSTOM INPUT AND INVALID INPUT
 .custom-input {
-    height: 40px;
-    border-radius: 4px;
-    border: solid 1px #e7e7e7;
-    background-color: #ffffff; //fafaff
-    font-size: 14px;
-    font-weight: 600;
-    margin-top: 12px;
-    margin-bottom: 8px;
-  }
-  .custom-input-invalid {
-    border: solid 1px #dd3945;
-    border-radius: 4px;
-    background-color: #ffffff; //fafaff
-    margin-top: 12px;
-  }
+  height: 40px;
+  border-radius: 4px;
+  border: solid 1px #e7e7e7;
+  background-color: #ffffff; //fafaff
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+.custom-input-invalid {
+  border: solid 1px #dd3945;
+  border-radius: 4px;
+  background-color: #ffffff; //fafaff
+  margin-top: 12px;
+}
+
+ion-button {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  --box-shadow: none;
+  --border-width: thin;
+  letter-spacing: normal;
+  margin: 0;
+  text-transform: none;
+}

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { InputOtpComponent } from './input-otp.component';
+import { StatisticsPage } from './statistics.page';
 
-describe('InputOtpComponent', () => {
-  let component: InputOtpComponent;
-  let fixture: ComponentFixture<InputOtpComponent>;
+describe('StatisticsPage', () => {
+  let component: StatisticsPage;
+  let fixture: ComponentFixture<StatisticsPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ InputOtpComponent ],
+      declarations: [ StatisticsPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InputOtpComponent);
+    fixture = TestBed.createComponent(StatisticsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -38,6 +38,20 @@ const routes: Routes = [
         (m) => m.InputOtpPageModule
       ),
   },
+  {
+    path: 'victim-list',
+    loadChildren: () =>
+      import('./pages/victim/victim-list/victim-list.module').then(
+        (m) => m.VictimListPageModule
+      ),
+  },
+  {
+    path: 'statistics',
+    loadChildren: () =>
+      import('./pages/statistics/statistics.module').then(
+        (m) => m.StatisticsPageModule
+      ),
+  },
 ];
 
 @NgModule({
