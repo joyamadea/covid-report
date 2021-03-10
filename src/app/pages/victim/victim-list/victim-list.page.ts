@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, AlertController } from '@ionic/angular';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { map } from 'rxjs/operators';
@@ -26,13 +26,18 @@ export class VictimListPage implements OnInit {
     private firebaseService: FirebaseService,
     private storage: AngularFireStorage,
     private router: Router,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {}
 
   ionViewWillEnter() {
     this.fetchData();
+  }
+
+  goBack() {
+    this.router.navigate(['']);
   }
 
   async fetchData() {
@@ -123,7 +128,7 @@ export class VictimListPage implements OnInit {
           text: 'Delete',
           icon: 'trash',
           handler: () => {
-            console.log('Share clicked');
+            this.confirmDelete(id);
           },
         },
         {
@@ -137,6 +142,35 @@ export class VictimListPage implements OnInit {
       ],
     });
     await actionSheet.present();
+  }
+
+  async confirmDelete(id) {
+    const alert = await this.alertController.create({
+      header: 'Confirm Delete',
+      message: 'Are you sure you want to delete victim report?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel: blah');
+          },
+        },
+        {
+          text: 'Okay',
+          handler: () => {
+            this.delete(id);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  delete(id) {
+    this.firebaseService.delete(id);
   }
 
   gotoDetail(id) {

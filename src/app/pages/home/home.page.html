@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Home</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logoutPrompt()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -11,22 +16,18 @@
   <div>
     <ion-row>
       <ion-col size="6">
-        <ion-button class="half-screen">view list</ion-button>
+        <ion-button class="half-screen" (click)="goto('list')"
+          >view list</ion-button
+        >
       </ion-col>
       <ion-col size="6">
-        <ion-button class="half-screen">add</ion-button>
+        <ion-button class="half-screen" (click)="goto('add')">add</ion-button>
       </ion-col>
     </ion-row>
   </div>
-  <ion-row>
+  <ion-row *ngIf="userData == 'admin' && !loading">
     <ion-col>
       <ion-button class="full">statistics</ion-button>
     </ion-col>
   </ion-row>
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="gotoAdd()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>

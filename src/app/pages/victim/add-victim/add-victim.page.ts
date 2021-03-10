@@ -11,6 +11,7 @@ import { CameraResultType, CameraSource, Plugins } from '@capacitor/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { CacheService } from 'src/app/services/cache.service';
+import { Router } from '@angular/router';
 const { Camera, Device } = Plugins;
 
 @Component({
@@ -42,7 +43,8 @@ export class AddVictimPage implements OnInit {
     private fb: FormBuilder,
     private firebaseService: FirebaseService,
     private storage: AngularFireStorage,
-    private cache: CacheService
+    private cache: CacheService,
+    private router: Router
   ) {
     this.initForm();
   }
@@ -54,6 +56,10 @@ export class AddVictimPage implements OnInit {
     this.cache.getId().then((res: any) => {
       this.uid = res;
     });
+  }
+
+  goBack() {
+    this.router.navigate(['']);
   }
 
   async initForm() {

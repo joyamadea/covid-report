@@ -7,7 +7,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/core';
 import { ActionSheetController } from '@ionic/angular';
 import { map } from 'rxjs/operators';
@@ -45,7 +45,8 @@ export class EditVictimPage implements OnInit {
     private storage: AngularFireStorage,
     private firebaseService: FirebaseService,
     private actionSheetController: ActionSheetController,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     this.initForm();
   }
@@ -61,6 +62,10 @@ export class EditVictimPage implements OnInit {
   ionViewWillEnter() {
     this.getVictimData();
     this.getLocations();
+  }
+
+  goBack() {
+    this.router.navigate(['victim-ilst']);
   }
 
   async initForm() {

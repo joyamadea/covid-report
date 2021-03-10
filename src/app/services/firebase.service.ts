@@ -24,12 +24,10 @@ export class FirebaseService {
   }
 
   create(victim: Victim) {
-    this.victimRef = this.db.list('/victim');
     return this.victimRef.push(victim);
   }
 
   getAllVictim() {
-    this.victimRef = this.db.list('/victim');
     return this.victimRef;
   }
 
@@ -43,5 +41,9 @@ export class FirebaseService {
 
   update(victim: Victim, id) {
     return this.victimRef.update(id, victim);
+  }
+
+  delete(key) {
+    return this.victimRef.remove(key);
   }
 }
