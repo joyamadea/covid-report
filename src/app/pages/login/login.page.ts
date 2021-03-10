@@ -12,7 +12,6 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import { environment } from 'src/environments/environment';
 import { ModalController, ToastController } from '@ionic/angular';
-import { InputOtpComponent } from 'src/app/components/input-otp/input-otp.component';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { CacheService } from 'src/app/services/cache.service';
 import { InputOtpPage } from '../input-otp/input-otp.page';
