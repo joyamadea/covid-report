@@ -10,6 +10,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { ModalController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { CacheService } from 'src/app/services/cache.service';
 
 @Component({
   selector: 'app-input-otp',
@@ -17,44 +19,51 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./input-otp.component.scss'],
 })
 export class InputOtpComponent implements OnInit {
-  public formOtp: FormGroup;
   confirmationResult: firebase.auth.ConfirmationResult;
+  getOtpCode = '';
 
   @Input() confirmResult;
-  constructor(
-    private fb: FormBuilder,
-    private fa: AngularFireAuth,
-    private modalController: ModalController
-  ) {
-    this.initForm();
-  }
+  constructor(private router: Router, private cache: CacheService) {}
 
   ngOnInit() {
     this.confirmationResult = this.confirmResult;
     console.log(this.confirmResult);
   }
 
-  async initForm() {
-    this.formOtp = this.fb.group({
-      otp: new FormControl(null, Validators.compose([Validators.required])),
+  checkOtp() {
+    console.log(this.getOtpCode);
+    if (this.getOtpCode.length == 6) {
+      this.confirmationResult.confirm(this.getOtpCode).then((res) => {
+        alert('otp verified');
+        console.log(res);
+        this.checkUser();
+        // this.modalController.dismiss();
+      });
+    }
+  }
+
+  async checkUser() {
+    const check = firebase.database().ref('/users/+6282262268800');
+    check.once('value', async (snapshot) => {
+      if (snapshot.val() == null) {
+        console.log('null');
+        firebase.database().ref('/users').child('+6282262268800').set({
+          role: 'user',
+        });
+        this.cache.setRole('user');
+        this.router.navigate(['']);
+      } else {
+        console.log('not null');
+        console.log(snapshot.val().role);
+        this.cache.setRole(snapshot.val().role);
+        this.router.navigate(['']);
+        // await firebase.database().
+        //   .object('/users/+6282262268800')
+        //   .valueChanges()
+        //   .subscribe((data: any) => {
+        //     console.log(data.role);
+        //   });
+      }
     });
-  }
-
-  get f() {
-    return this.formOtp.controls;
-  }
-
-  async login() {
-    console.log('hi');
-    let otp = this.formOtp.value.otp.toString();
-    console.log(otp);
-    // this.confirmationResult.confirm(otp).then(() => {
-    //   alert('otp verified');
-    // });
-    // this.confirmationResult.confirm(otp).then((res) => {
-    //   alert('otp verified');
-    //   console.log(res);
-    //   // this.modalController.dismiss();
-    // });
   }
 }

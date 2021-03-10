@@ -28,7 +28,9 @@
 
     <ion-row class="ion-margin-vertical">
       <ion-col size="12">
-        <ion-button expand="full" type="submit">Login</ion-button>
+        <ion-button expand="full" type="submit" [disabled]="submitted"
+          >Login</ion-button
+        >
       </ion-col>
     </ion-row>
   </form>

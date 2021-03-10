@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -9,7 +9,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CacheService } from 'src/app/services/cache.service';
+import { ModalController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-input-otp',
@@ -17,41 +19,68 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./input-otp.page.scss'],
 })
 export class InputOtpPage implements OnInit {
-  public formOtp: FormGroup;
+  @Input() confirmResult;
+  @Input() phoneNum;
+
+  getOtpCode = '';
   confirmationResult: firebase.auth.ConfirmationResult;
   constructor(
-    private fb: FormBuilder,
-    private fa: AngularFireAuth,
-    private route: ActivatedRoute
-  ) {
-    this.initForm();
-  }
+    private cache: CacheService,
+    private router: Router,
+    private modalController: ModalController,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      this.confirmationResult = params['val'];
-      console.log(this.confirmationResult);
-    });
+    this.confirmationResult = this.confirmResult;
   }
 
-  async initForm() {
-    this.formOtp = this.fb.group({
-      otp: new FormControl(null, Validators.compose([Validators.required])),
-    });
+  async checkOtp() {
+    console.log(this.getOtpCode.length);
+    if (this.getOtpCode.length == 6) {
+      this.confirmationResult.confirm(this.getOtpCode).then((res) => {
+        alert('otp verified');
+        console.log(res);
+        let uid = firebase.auth().currentUser.uid;
+        this.cache.setId(uid);
+        this.cache.setLoggedIn(true);
+        this.checkUser();
+        // this.modalController.dismiss();
+      });
+    } else {
+    }
   }
 
-  get f() {
-    return this.formOtp.controls;
+  async checkUser() {
+    const check = firebase.database().ref('/users/' + this.phoneNum);
+    check.once(
+      'value',
+      async (snapshot) => {
+        if (snapshot.val() == null) {
+          firebase.database().ref('/users').child(this.phoneNum).set({
+            role: 'user',
+          });
+          this.cache.setRole('user');
+          this.router.navigate(['/home']);
+        } else {
+          console.log(snapshot.val().role);
+          this.cache.setRole(snapshot.val().role);
+          this.router.navigate(['/home']);
+        }
+        this.presentToast();
+        this.modalController.dismiss();
+      },
+      (err: any) => {
+        console.log(err);
+      }
+    );
   }
 
-  async login() {
-    let otp = this.formOtp.value.otp.toString();
-    console.log(otp);
-    // this.confirmationResult.confirm(otp).then(() => {
-    //   alert('otp verified');
-    // });
-    this.confirmationResult.confirm('123456').then((res) => {
-      console.log(res);
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Successful Login',
+      duration: 2000,
     });
+    toast.present();
   }
 }

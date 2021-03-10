@@ -7,12 +7,12 @@ import { Storage } from '@ionic/storage';
 export class CacheService {
   constructor(private storage: Storage) {}
 
-  setPhone(phone) {
-    this.storage.set('phone', phone);
+  setId(phone) {
+    this.storage.set('uid', phone);
   }
 
-  getPhone() {
-    return this.storage.get('phone');
+  getId() {
+    return this.storage.get('uid');
   }
 
   setRole(role) {

@@ -14,9 +14,15 @@ export class HomePage implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
-    this.cache.getRole().then((res: any) => {
-      this.userData = res;
-      console.log(this.userData);
+    this.cache.isLoggedIn().then((res: any) => {
+      if (!res) {
+        this.router.navigate(['/login']);
+      } else {
+        this.cache.getRole().then((res: any) => {
+          this.userData = res;
+          console.log(this.userData);
+        });
+      }
     });
   }
   gotoAdd() {
