@@ -7,6 +7,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/core';
 import { ActionSheetController } from '@ionic/angular';
 import { map } from 'rxjs/operators';
@@ -23,6 +24,7 @@ export class EditVictimPage implements OnInit {
   locations: any;
   photo: any;
   filePath: any;
+  key: any;
 
   items = [
     {
@@ -42,12 +44,19 @@ export class EditVictimPage implements OnInit {
     private db: AngularFireDatabase,
     private storage: AngularFireStorage,
     private firebaseService: FirebaseService,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private activatedRoute: ActivatedRoute
   ) {
     this.initForm();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.activatedRoute.params.subscribe((params) => {
+      if (params) {
+        this.key = params['id'];
+      }
+    });
+  }
 
   ionViewWillEnter() {
     this.getVictimData();
@@ -69,7 +78,7 @@ export class EditVictimPage implements OnInit {
 
   async getVictimData() {
     await this.db
-      .object('/victim/-MVNLBPCJ3a4shg3jjSo')
+      .object('/victim/' + this.key)
       .valueChanges()
       .subscribe((data) => {
         this.detail = data;

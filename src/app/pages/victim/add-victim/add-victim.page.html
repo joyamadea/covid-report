@@ -21,7 +21,7 @@
 
     <ion-row class="ion-margin-vertical">
       <ion-col>
-        <ion-button (click)="changePhoto()">Picture</ion-button>
+        <ion-button (click)="getPicture()">Picture</ion-button>
       </ion-col>
       <ion-col *ngIf="photo != null">
         <img [src]="photo" />

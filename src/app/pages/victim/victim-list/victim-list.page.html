@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>victim-list</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let victim of victimList" (press)="actions(victim.key)">
+      <ion-thumbnail slot="start">
+        <img [src]="victim.ref" />
+      </ion-thumbnail>
+      <ion-label>
+        <h3>{{ victim.name }} ({{ victim.age }}{{ victim.gender }})</h3>
+        <p>{{ victim.address }} {{ victim.location }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -7,9 +7,11 @@ import {
 } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { ActionSheetController } from '@ionic/angular';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/core';
+import { CameraResultType, CameraSource, Plugins } from '@capacitor/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { CacheService } from 'src/app/services/cache.service';
+const { Camera, Device } = Plugins;
 
 @Component({
   selector: 'app-add-victim',
@@ -34,12 +36,13 @@ export class AddVictimPage implements OnInit {
   thumbnail = true;
   photo: any;
   filePath: any;
+  uid;
 
   constructor(
     private fb: FormBuilder,
     private firebaseService: FirebaseService,
-    private actionSheetController: ActionSheetController,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private cache: CacheService
   ) {
     this.initForm();
   }
@@ -48,6 +51,9 @@ export class AddVictimPage implements OnInit {
 
   ionViewWillEnter() {
     this.getLocations();
+    this.cache.getId().then((res: any) => {
+      this.uid = res;
+    });
   }
 
   async initForm() {
@@ -68,12 +74,12 @@ export class AddVictimPage implements OnInit {
   }
 
   addNew() {
-    console.log(this.formAdd.value);
     let body;
     if (this.formAdd.valid) {
       this.updatePhotoProfile();
       body = this.formAdd.value;
       body.ref = this.filePath;
+      body.uid = this.uid;
     }
     this.firebaseService.create(body);
   }
@@ -95,56 +101,12 @@ export class AddVictimPage implements OnInit {
       });
   }
 
-  // CHANGE PHOTO PROFILE
-  async changePhoto() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Mengambil Gambar dari',
-      buttons: [
-        {
-          text: 'Gallery',
-          icon: 'images',
-          handler: () => {
-            this.getPicture();
-          },
-        },
-        {
-          text: 'Camera',
-          icon: 'camera',
-          handler: () => {
-            this.takePicture();
-          },
-        },
-        {
-          text: 'Cancel',
-          icon: 'close',
-          role: 'cancel',
-          handler: () => {
-            console.log('cancelled');
-          },
-        },
-      ],
-    });
-    await actionSheet.present();
-  }
-
   // GET PICTURE FROM PHONE
   async getPicture() {
     const image = await Camera.getPhoto({
       quality: 90,
       resultType: CameraResultType.DataUrl,
       source: CameraSource.Photos,
-    });
-    this.photo = image.dataUrl;
-    console.log(image);
-    // this.updatePhotoProfile();
-  }
-
-  // TAKE PICTURE USING CAMERA
-  async takePicture() {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Camera,
     });
     this.photo = image.dataUrl;
   }
@@ -169,12 +131,6 @@ export class AddVictimPage implements OnInit {
     this.filePath = '/profile/' + name;
     const ref = this.storage.ref(this.filePath);
     const task = ref.put(file).then((res) => {
-      // this.storage
-      //   .ref(this.filePath)
-      //   .getDownloadURL()
-      //   .subscribe((res: any) => {
-      //     console.log(res);
-      //   });
       console.log(res);
     });
   }
