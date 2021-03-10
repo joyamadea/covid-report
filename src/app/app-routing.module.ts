@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -29,6 +29,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./pages/victim/edit-victim/edit-victim.module').then(
         (m) => m.EditVictimPageModule
+      ),
+  },
+  {
+    path: 'input-otp',
+    loadChildren: () =>
+      import('./pages/input-otp/input-otp.module').then(
+        (m) => m.InputOtpPageModule
       ),
   },
 ];

@@ -4,13 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EditVictimPage } from './edit-victim.page';
+import { InputOtpPage } from './input-otp.page';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditVictimPage,
+    component: InputOtpPage,
   },
 ];
 
@@ -20,9 +20,9 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    ReactiveFormsModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
-  declarations: [EditVictimPage],
+  declarations: [InputOtpPage],
 })
-export class EditVictimPageModule {}
+export class InputOtpPageModule {}
